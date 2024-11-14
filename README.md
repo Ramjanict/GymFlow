@@ -2,6 +2,9 @@
 ## **Introduction**
 This is a Gym Class Scheduling and Membership Management System where the admin can manage trainers, and trainees. Every day has a maximum of five class schedules and can have 10 trainees for each class. Trainers conduct the classes and can view their assigned class schedules but cannot create new schedules or manage trainee profiles. Trainees can create and manage their own profiles and book class schedules if available, with a maximum of ten trainees per schedule.
 
+![](https://github.com/Ramjanict/Gym-Class-Scheduling/blob/main/frontend/src/assets/home.png?raw=true)
+
+
 
 ## **Technology stack**
 **Client:** React, Redux, TailwindCSS, Context API, react-toastify, JWT <br>
