@@ -1,0 +1,626 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// ==========================================
+// ENUMS
+// ==========================================
+
+enum OrganizationStatus {
+  PENDING
+  ACTIVE
+  SUSPENDED
+  CANCELLED
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  BLOCKED
+  PENDING
+}
+
+enum RoleType {
+  PLATFORM
+  ORGANIZATION
+}
+
+enum ClassStatus {
+  DRAFT
+  ACTIVE
+  INACTIVE
+  ARCHIVED
+}
+
+enum SessionStatus {
+  SCHEDULED
+  CANCELLED
+  COMPLETED
+}
+
+enum BookingStatus {
+  CONFIRMED
+  WAITLISTED
+  CANCELLED
+  ATTENDED
+  NO_SHOW
+}
+
+enum SubscriptionStatus {
+  PENDING
+  ACTIVE
+  PAUSED
+  EXPIRED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+  PARTIALLY_REFUNDED
+}
+
+enum AttendanceStatus {
+  PRESENT
+  LATE
+  ABSENT
+}
+
+enum RecurrenceType {
+  NONE
+  DAILY
+  WEEKLY
+  MONTHLY
+}
+
+enum WeekDay {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
+}
+
+// ==========================================
+// IDENTITY & TENANCY MODELS
+// ==========================================
+
+model Organization {
+  id            String             @id @default(uuid())
+  name          String
+  slug          String             @unique
+  email         String
+  phone         String?
+  logo          String?
+  status        OrganizationStatus @default(ACTIVE)
+
+  branches      Branch[]
+  users         User[]
+  roles         Role[]
+  classes       FitnessClass[]
+  categories    ClassCategory[]
+  plans         MembershipPlan[]
+  subscriptions Subscription[]
+  sessions      ClassSession[]
+  bookings      ClassBooking[]
+  waitlist      WaitlistEntry[]
+  attendance    Attendance[]
+  payments      Payment[]
+  auditLogs     AuditLog[]
+  fileAssets    FileAsset[]
+  platformSubs  OrganizationSubscription[]
+
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+}
+
+model User {
+  id             String         @id @default(uuid())
+  email          String         @unique
+  password       String
+  firstName      String
+  lastName       String
+  phone          String?
+  avatar         String?
+  status         UserStatus     @default(ACTIVE)
+
+  organizationId String?
+  organization   Organization?  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  userRoles      UserRole[]
+  refreshTokens  RefreshToken[]
+  trainer        TrainerProfile?
+  member         MemberProfile?
+  staffBranches  BranchStaff[]
+  auditLogs      AuditLog[]
+  notifications  Notification[]
+  preferences    NotificationPreference?
+
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  @@index([organizationId])
+}
+
+model Role {
+  id              String           @id @default(uuid())
+  name            String
+  type            RoleType         @default(ORGANIZATION)
+  organizationId  String?
+  organization    Organization?    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  userRoles       UserRole[]
+  rolePermissions RolePermission[]
+
+  @@unique([organizationId, name])
+}
+
+model Permission {
+  id              String           @id @default(uuid())
+  key             String           @unique
+  description     String?
+  rolePermissions RolePermission[]
+}
+
+model UserRole {
+  id     String @id @default(uuid())
+  userId String
+  roleId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role   Role   @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, roleId])
+}
+
+model RolePermission {
+  id           String     @id @default(uuid())
+  roleId       String
+  permissionId String
+  role         Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@unique([roleId, permissionId])
+}
+
+model RefreshToken {
+  id        String    @id @default(uuid())
+  userId    String
+  tokenHash String
+  expiresAt DateTime
+  revokedAt DateTime?
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime  @default(now())
+
+  @@index([userId])
+}
+
+// ==========================================
+// BRANCH, STAFF, TRAINER, MEMBER MODELS
+// ==========================================
+
+model Branch {
+  id             String             @id @default(uuid())
+  organizationId String
+  name           String
+  slug           String
+  address        String
+  city           String
+  timezone       String             @default("Asia/Dhaka")
+  isActive       Boolean            @default(true)
+
+  organization   Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  rooms          Room[]
+  staff          BranchStaff[]
+  sessions       ClassSession[]
+  schedules      ClassSchedule[]
+  trainers       TrainerBranch[]
+  plans          MembershipBranch[]
+
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+
+  @@unique([organizationId, slug])
+  @@unique([id, organizationId])
+  @@index([organizationId])
+}
+
+model BranchStaff {
+  id       String  @id @default(uuid())
+  branchId String
+  userId   String
+  jobTitle String?
+  branch   Branch  @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  user     User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([branchId, userId])
+}
+
+model TrainerProfile {
+  id          String          @id @default(uuid())
+  userId      String          @unique
+  bio         String?
+  specialties String[]
+  hourlyRate  Decimal?        @db.Decimal(10, 2)
+  user        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  branches    TrainerBranch[]
+  sessions    SessionTrainer[]
+}
+
+model TrainerBranch {
+  id        String         @id @default(uuid())
+  trainerId String
+  branchId  String
+  trainer   TrainerProfile @relation(fields: [trainerId], references: [id], onDelete: Cascade)
+  branch    Branch         @relation(fields: [branchId], references: [id], onDelete: Cascade)
+
+  @@unique([trainerId, branchId])
+}
+
+model MemberProfile {
+  id               String          @id @default(uuid())
+  userId           String          @unique
+  dateOfBirth      DateTime?
+  emergencyContact String?
+  user             User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subscriptions    Subscription[]
+  bookings         ClassBooking[]
+  waitlistEntries  WaitlistEntry[]
+}
+
+model Room {
+  id       String         @id @default(uuid())
+  branchId String
+  name     String
+  capacity Int
+  branch   Branch         @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  sessions ClassSession[]
+
+  @@unique([branchId, name])
+}
+
+// ==========================================
+// FITNESS CLASSES & SCHEDULING
+// ==========================================
+
+model ClassCategory {
+  id             String         @id @default(uuid())
+  organizationId String
+  name           String
+  slug           String
+  description    String?
+  organization   Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  classes        FitnessClass[]
+
+  @@unique([organizationId, slug])
+}
+
+model FitnessClass {
+  id             String          @id @default(uuid())
+  organizationId String
+  categoryId     String?
+  name           String
+  description    String?
+  duration       Int             // minutes
+  capacity       Int
+  level          String?         // Beginner, Intermediate, Advanced
+  image          String?
+  status         ClassStatus     @default(ACTIVE)
+
+  organization   Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  category       ClassCategory?  @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  schedules      ClassSchedule[]
+  sessions       ClassSession[]
+
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  @@unique([id, organizationId])
+  @@index([organizationId, status])
+}
+
+model ClassSchedule {
+  id             String         @id @default(uuid())
+  organizationId String
+  fitnessClassId String
+  branchId       String
+  recurrence     RecurrenceType @default(WEEKLY)
+  startTime      String         // "09:00"
+  endTime        String         // "10:00"
+  startDate      DateTime
+  endDate        DateTime?
+  daysOfWeek     WeekDay[]
+  timezone       String         @default("Asia/Dhaka")
+
+  fitnessClass   FitnessClass   @relation(fields: [fitnessClassId], references: [id], onDelete: Cascade)
+  branch         Branch         @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  sessions       ClassSession[]
+
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  @@index([organizationId, fitnessClassId])
+}
+
+model ClassSession {
+  id             String          @id @default(uuid())
+  organizationId String
+  branchId       String
+  scheduleId     String?
+  fitnessClassId String
+  roomId         String?
+  startsAt       DateTime
+  endsAt         DateTime
+  capacity       Int
+  bookedCount    Int             @default(0)
+  status         SessionStatus   @default(SCHEDULED)
+
+  organization   Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  branch         Branch          @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  fitnessClass   FitnessClass    @relation(fields: [fitnessClassId], references: [id], onDelete: Cascade)
+  schedule       ClassSchedule?  @relation(fields: [scheduleId], references: [id], onDelete: SetNull)
+  room           Room?           @relation(fields: [roomId], references: [id], onDelete: SetNull)
+
+  trainers       SessionTrainer[]
+  bookings       ClassBooking[]
+  waitlist       WaitlistEntry[]
+
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  @@index([organizationId, branchId, startsAt])
+}
+
+model SessionTrainer {
+  id        String         @id @default(uuid())
+  sessionId String
+  trainerId String
+  session   ClassSession   @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  trainer   TrainerProfile @relation(fields: [trainerId], references: [id], onDelete: Cascade)
+
+  @@unique([sessionId, trainerId])
+}
+
+// ==========================================
+// BOOKING, WAITLIST & ATTENDANCE
+// ==========================================
+
+model ClassBooking {
+  id             String         @id @default(uuid())
+  organizationId String
+  sessionId      String
+  memberId       String
+  status         BookingStatus  @default(CONFIRMED)
+  bookedAt       DateTime       @default(now())
+  cancelledAt    DateTime?
+
+  organization   Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  session        ClassSession   @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  member         MemberProfile  @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  attendance     Attendance?
+
+  @@unique([sessionId, memberId])
+  @@index([memberId, bookedAt])
+  @@index([organizationId, status])
+}
+
+model WaitlistEntry {
+  id             String        @id @default(uuid())
+  organizationId String
+  sessionId      String
+  memberId       String
+  position       Int
+  createdAt      DateTime      @default(now())
+
+  organization   Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  session        ClassSession  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  member         MemberProfile @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  @@unique([sessionId, memberId])
+  @@unique([sessionId, position])
+}
+
+model Attendance {
+  id             String           @id @default(uuid())
+  organizationId String
+  bookingId      String           @unique
+  status         AttendanceStatus @default(PRESENT)
+  checkedInAt    DateTime?
+  checkedInBy    String?
+
+  organization   Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  booking        ClassBooking     @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+}
+
+// ==========================================
+// MEMBERSHIP & PAYMENTS
+// ==========================================
+
+model MembershipPlan {
+  id             String             @id @default(uuid())
+  organizationId String
+  name           String
+  description    String?
+  price          Decimal            @db.Decimal(10, 2)
+  durationDays   Int
+  bookingLimit   Int?               // max classes per month/cycle (null = unlimited)
+  isActive       Boolean            @default(true)
+
+  organization   Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  subscriptions  Subscription[]
+  branches       MembershipBranch[]
+
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+
+  @@index([organizationId])
+}
+
+model MembershipBranch {
+  id       String         @id @default(uuid())
+  planId   String
+  branchId String
+  plan     MembershipPlan @relation(fields: [planId], references: [id], onDelete: Cascade)
+  branch   Branch         @relation(fields: [branchId], references: [id], onDelete: Cascade)
+
+  @@unique([planId, branchId])
+}
+
+model Subscription {
+  id             String             @id @default(uuid())
+  organizationId String
+  memberId       String
+  planId         String
+  startsAt       DateTime
+  expiresAt      DateTime
+  status         SubscriptionStatus @default(ACTIVE)
+
+  organization   Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  member         MemberProfile      @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  plan           MembershipPlan     @relation(fields: [planId], references: [id], onDelete: Cascade)
+  payments       Payment[]
+
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+
+  @@index([memberId, status])
+  @@index([organizationId])
+}
+
+model Payment {
+  id             String         @id @default(uuid())
+  organizationId String
+  subscriptionId String?
+  amount         Decimal        @db.Decimal(10, 2)
+  currency       String         @default("BDT")
+  provider       String?        // STRIPE, SSLCOMMERZ, BKASH, MANUAL
+  transactionId  String?        @unique
+  status         PaymentStatus  @default(PAID)
+  paidAt         DateTime?      @default(now())
+
+  organization   Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  subscription   Subscription?  @relation(fields: [subscriptionId], references: [id], onDelete: SetNull)
+  invoices       Invoice[]
+  refunds        Refund[]
+
+  createdAt      DateTime       @default(now())
+
+  @@index([organizationId])
+}
+
+model Invoice {
+  id             String       @id @default(uuid())
+  organizationId String
+  paymentId      String
+  invoiceNumber  String       @unique
+  amount         Decimal      @db.Decimal(10, 2)
+  pdfUrl         String?
+  payment        Payment      @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+  createdAt      DateTime     @default(now())
+}
+
+model Refund {
+  id             String       @id @default(uuid())
+  organizationId String
+  paymentId      String
+  amount         Decimal      @db.Decimal(10, 2)
+  reason         String?
+  status         String       @default("COMPLETED")
+  payment        Payment      @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+  createdAt      DateTime     @default(now())
+}
+
+// ==========================================
+// NOTIFICATIONS & AUDIT
+// ==========================================
+
+model Notification {
+  id             String       @id @default(uuid())
+  organizationId String?
+  userId         String
+  title          String
+  message        String
+  isRead         Boolean      @default(false)
+  type           String       @default("GENERAL")
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt      DateTime     @default(now())
+}
+
+model NotificationPreference {
+  id           String  @id @default(uuid())
+  userId       String  @unique
+  emailEnabled Boolean @default(true)
+  inAppEnabled Boolean @default(true)
+  smsEnabled   Boolean @default(false)
+  user         User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model AuditLog {
+  id             String        @id @default(uuid())
+  organizationId String?
+  userId         String?
+  action         String
+  resource       String
+  resourceId     String?
+  details        Json?
+  ipAddress      String?
+  userAgent      String?
+
+  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+  user           User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  createdAt      DateTime      @default(now())
+
+  @@index([organizationId, createdAt])
+}
+
+// ==========================================
+// SAAS PLATFORM BILLING & ASSETS
+// ==========================================
+
+model PlatformPlan {
+  id            String                     @id @default(uuid())
+  name          String                     @unique // STARTER, PROFESSIONAL, ENTERPRISE
+  price         Decimal                    @db.Decimal(10, 2)
+  maxBranches   Int                        @default(1)
+  maxMembers    Int                        @default(100)
+  maxTrainers   Int                        @default(5)
+  features      Json?
+  subscriptions OrganizationSubscription[]
+  createdAt     DateTime                   @default(now())
+}
+
+model OrganizationSubscription {
+  id             String             @id @default(uuid())
+  organizationId String
+  planId         String
+  startsAt       DateTime
+  expiresAt      DateTime
+  status         SubscriptionStatus @default(ACTIVE)
+
+  organization   Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  plan           PlatformPlan       @relation(fields: [planId], references: [id], onDelete: Cascade)
+
+  createdAt      DateTime           @default(now())
+}
+
+model FileAsset {
+  id             String        @id @default(uuid())
+  organizationId String?
+  url            String
+  publicId       String?
+  fileName       String
+  mimeType       String?
+  size           Int?
+
+  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: SetNull)
+
+  createdAt      DateTime      @default(now())
+}

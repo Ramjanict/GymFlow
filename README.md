@@ -1,56 +1,117 @@
-## **Gym class scheduling and membership management system**
-## **Introduction**
-This is a Gym Class Scheduling and Membership Management System where the admin can manage trainers, and trainees. Every day has a maximum of five class schedules and can have 10 trainees for each class. Trainers conduct the classes and can view their assigned class schedules but cannot create new schedules or manage trainee profiles. Trainees can create and manage their own profiles and book class schedules if available, with a maximum of ten trainees per schedule.
+# GymFlow — Multi-Tenant Gym Scheduling & Membership SaaS Platform
 
-![](https://github.com/Ramjanict/Gym-Class-Scheduling/blob/main/frontend/src/assets/home.png?raw=true)
+GymFlow is an enterprise-scale, production-ready Multi-Tenant SaaS platform architected for modern gym chains and boutique fitness studios. Multiple independent gym businesses can register, operate multiple branches (e.g. Mirpur, Gulshan), coordinate trainers, schedule recurring classes, and prevent class overbooking with transactional row-level concurrency locks.
 
+---
 
+## ⚡ Tech Stack Architecture
 
-## **Technology stack**
-**Client:** React, Redux, TailwindCSS, Context API, react-toastify, JWT <br>
-**Server:** Node, Express, Mongoose, Cloudinary, JWT <br>
-**Database:** MongoDB 
+- **Backend**: [NestJS](https://nestjs.com/) (Modular Monolith, TypeScript, Passport.js, JWT Token Rotation, Swagger API Gateway)
+- **Database**: [PostgreSQL on Neon](https://neon.tech/) with [Prisma ORM](https://www.prisma.io/) (33 entities, composite tenant isolation keys)
+- **Frontend**: [Next.js 14 App Router](https://nextjs.org/) (TypeScript, Tailwind CSS, Redux Toolkit, React Toastify, Lucide Icons)
+- **Asset Storage**: [Cloudinary](https://cloudinary.com/) (`ku04x3pn`)
+- **Monorepo**: [pnpm Workspaces](https://pnpm.io/) + [Turborepo](https://turbo.build/)
 
+---
 
-## **Installation**
-To install Project Title, follow these steps:
-1. Clone the repository: **`git clone https://github.com/Ramjanict/Gym-Class-Scheduling.git`**
-2. Navigate to the project directory: **`cd Gyming`**
-3. Install dependencies: **`npm install`**
-4. Start the project: **`npm start`**
+## 🏢 Platform Portals & Logical Workspaces
 
-## **Instructions to run locally**
-To use Project Title, follow these steps:
-1. Open the project in your favorite code editor.
-2. Modify the source code to fit your needs.
-3. Frontend project: **`npm start`**
-4. Backend project: **`npm start`**
-5. Use the project as desired.
+GymFlow provides dedicated role-based portals:
 
-## **Admin credentials**
-Email: ramjan@gmail.com <br>
-password: 12345
+| Portal | URL Route | Scope | Target Audience |
+| :--- | :--- | :--- | :--- |
+| **Marketing Website** | `/` | Public | Prospective gym members & business owners |
+| **Member Portal** | `/member/classes`, `/member/bookings` | Tenant Member | Class discovery, 1-click booking, active membership pass |
+| **Gym Admin Dashboard** | `/dashboard/overview` | Gym Tenant (FitZone) | Gym owners, branch managers, receptionists |
+| **Trainer Workspace** | `/trainer` | Trainer | Assigned class rosters, member check-in |
+| **Super Admin Platform** | `/admin` | Platform Wide | Platform operator, SaaS subscriptions & tenant audits |
 
-## **Live hosting link**
-**[Live Preview](https://gym-three-rho.vercel.app/)**
+---
 
-## **Contributing**
-If you'd like to contribute to gym class scheduling and membership management system, here are some guidelines:
+## 🔑 Pre-Seeded Demo Credentials
 
-1. Fork the repository.
-2. Create a new branch for your changes.
-3. Make your changes.
-4. Write tests to cover your changes.
-5. Run the tests to ensure they pass.
-6. Commit your changes.
-7. Push your changes to your forked repository.
-8. Submit a pull request.
+The database on Neon PostgreSQL is already seeded and ready for instant testing:
 
+| Role | Email | Password | Default Portal Landing |
+| :--- | :--- | :--- | :--- |
+| **Super Admin** | `admin@gymflow.com` | `Admin12345!` | `/admin` |
+| **Gym Owner** | `owner@fitzone.com` | `123456` | `/dashboard/overview` |
+| **Trainer** | `trainer@fitzone.com` | `123456` | `/trainer` |
+| **Member** | `member@fitzone.com` | `123456` | `/member/classes` |
 
-## **Authors**
-Project Title was created by **[Md Ramjan Ali](https://github.com/Ramjanict)**.
+---
 
-## **Contact**
+## 🛡️ Critical Business Logic & Concurrency
 
-If you have any questions or comments about Project , please contact **mdramjan.ict@gmail.com**.
+### 1. Zero Overbooking via Row-Level Locking
+When multiple members attempt to book the last available seat in a class session concurrently, GymFlow initiates a database transaction with PostgreSQL row-level locking:
+```sql
+SELECT * FROM "ClassSession" WHERE id = $1 FOR UPDATE;
+```
+If the capacity is exhausted, the member is placed in the waitlist at their sequential FIFO position.
 
+### 2. Automated Waitlist Promotion
+When a member cancels a confirmed booking:
+1. The booking status updates to `CANCELLED`.
+2. The session's `bookedCount` decrements.
+3. The next member on the waitlist (`position = 1`) is promoted to `CONFIRMED` in the same transaction.
+
+### 3. Recurring Class Scheduling Engine
+Schedules define recurrence rules (e.g. Mon/Wed/Fri 09:00 AM - 10:00 AM) and automatically generate individual occurrences (`ClassSession`) 30 days in advance without duplicating past history.
+
+---
+
+## 🚀 Running the Project Locally
+
+### 1. Install Dependencies
+```bash
+pnpm install
+```
+
+### 2. Generate Prisma Client & Sync Database
+```bash
+pnpm db:generate
+pnpm db:push
+pnpm db:seed
+```
+
+### 3. Start Development Servers
+Run both API and Web concurrently:
+```bash
+pnpm dev
+```
+Or start individually:
+- **API (NestJS)**: `pnpm start:api` (Runs on `http://localhost:4000/api/v1`, Swagger at `http://localhost:4000/api/docs`)
+- **Web (Next.js)**: `pnpm start:web` (Runs on `http://localhost:3000`)
+
+---
+
+## 📦 Monorepo Directory Structure
+
+```
+GymFlow/
+├── apps/
+│   ├── api/                     # NestJS API Gateway
+│   │   ├── prisma/schema.prisma # 33 relational PostgreSQL entities
+│   │   └── src/
+│   │       ├── modules/         # Auth, Organizations, Branches, Classes, Sessions, Bookings, etc.
+│   │       ├── common/          # TenantGuard, PermissionsGuard, Decorators
+│   │       └── database/        # PrismaService & Database Seeder
+│   └── web/                     # Next.js 14 App Router
+│       └── src/
+│           ├── app/             # (marketing), (auth), (gym), (trainer), (member), (platform)
+│           ├── components/      # UI & Layout components
+│           ├── store/           # Redux Toolkit & Auth Slice
+│           └── lib/             # API client & helpers
+├── packages/
+│   └── shared-types/            # Shared TypeScript enums, contracts & types
+├── infrastructure/              # Dockerfiles & deployment assets
+├── docker-compose.yml
+└── pnpm-workspace.yaml
+```
+
+---
+
+## 👨‍💻 Author
+
+Architected and developed by **[Md Ramjan Ali](https://github.com/Ramjanict)** (`mdramjan.ict@gmail.com`).

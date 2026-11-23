@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/Dockerfile.api
+    restart: always
+    ports:
+      - "4000:4000"
+    environment:
+      - PORT=4000
+      - DATABASE_URL=postgresql://neondb_owner:npg_QoiMu6G9Nntl@ep-weathered-union-bew8rf5c-pooler.c-9.us-east-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require
+      - JWT_SECRET=gymflow_enterprise_access_jwt_secret_token_2026
+      - JWT_REFRESH_SECRET=gymflow_enterprise_refresh_jwt_secret_token_2026
+      - CLOUDINARY_CLOUD_NAME=ku04x3pn
+      - CLOUDINARY_API_KEY=975741728163626
+      - CLOUDINARY_UPLOAD_PRESET=Ecommerce
+      - FRONTEND_URL=http://localhost:3000
+    depends_on:
+      - redis
+
+  web:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/Dockerfile.web
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:4000/api/v1
+      - NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=ku04x3pn
+      - NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET=Ecommerce
+    depends_on:
+      - api
+
+  redis:
+    image: redis:7-alpine
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+volumes:
+  redis_data:
