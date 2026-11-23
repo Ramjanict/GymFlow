@@ -63,51 +63,46 @@ Schedules define recurrence rules (e.g. Mon/Wed/Fri 09:00 AM - 10:00 AM) and aut
 
 ## 🚀 Running the Project Locally
 
-### 1. Install Dependencies
+### 1. Backend (NestJS + PostgreSQL on Neon)
 ```bash
-pnpm install
+cd backend
+npm install
+npx prisma generate
+npx prisma db push
+npx prisma db:seed
+npm run start:dev
 ```
+- **API Base URL**: `http://localhost:4000/api/v1`
+- **Swagger Documentation**: `http://localhost:4000/api/docs`
 
-### 2. Generate Prisma Client & Sync Database
+### 2. Frontend (Next.js 14 App Router)
 ```bash
-pnpm db:generate
-pnpm db:push
-pnpm db:seed
+cd frontend
+npm install
+npm run dev
 ```
-
-### 3. Start Development Servers
-Run both API and Web concurrently:
-```bash
-pnpm dev
-```
-Or start individually:
-- **API (NestJS)**: `pnpm start:api` (Runs on `http://localhost:4000/api/v1`, Swagger at `http://localhost:4000/api/docs`)
-- **Web (Next.js)**: `pnpm start:web` (Runs on `http://localhost:3000`)
+- **Web App**: `http://localhost:3000`
 
 ---
 
-## 📦 Monorepo Directory Structure
+## 📦 Directory Structure
 
 ```
 GymFlow/
-├── apps/
-│   ├── api/                     # NestJS API Gateway
-│   │   ├── prisma/schema.prisma # 33 relational PostgreSQL entities
-│   │   └── src/
-│   │       ├── modules/         # Auth, Organizations, Branches, Classes, Sessions, Bookings, etc.
-│   │       ├── common/          # TenantGuard, PermissionsGuard, Decorators
-│   │       └── database/        # PrismaService & Database Seeder
-│   └── web/                     # Next.js 14 App Router
-│       └── src/
-│           ├── app/             # (marketing), (auth), (gym), (trainer), (member), (platform)
-│           ├── components/      # UI & Layout components
-│           ├── store/           # Redux Toolkit & Auth Slice
-│           └── lib/             # API client & helpers
-├── packages/
-│   └── shared-types/            # Shared TypeScript enums, contracts & types
-├── infrastructure/              # Dockerfiles & deployment assets
-├── docker-compose.yml
-└── pnpm-workspace.yaml
+├── backend/                     # NestJS API Gateway (Prisma, PostgreSQL, JWT, Swagger)
+│   ├── prisma/schema.prisma     # 33 relational PostgreSQL entities on Neon DB
+│   └── src/
+│       ├── modules/             # Auth, Organizations, Branches, Classes, Sessions, Bookings, etc.
+│       ├── common/              # TenantGuard, PermissionsGuard, Decorators
+│       └── database/            # PrismaService & Database Seeder
+├── frontend/                    # Next.js 14 App Router (Tailwind CSS, Redux, Lucide)
+│   └── src/
+│       ├── app/                 # (marketing), (auth), (gym), (trainer), (member), (platform)
+│       ├── components/          # UI & Layout components
+│       ├── store/               # Redux Toolkit & Auth Slice
+│       └── lib/                 # API client & helpers
+├── .gitignore
+└── README.md
 ```
 
 ---
