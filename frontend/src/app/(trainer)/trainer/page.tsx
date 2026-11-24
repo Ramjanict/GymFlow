@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Navbar from '@/components/layout/Navbar';
+import Footer from '@/components/layout/Footer';
 import { apiRequest } from '@/lib/api';
 import { toast } from 'react-toastify';
 import {
@@ -12,6 +13,8 @@ import {
   Users,
   CheckCircle2,
   AlertCircle,
+  Zap,
+  Sparkles,
 } from 'lucide-react';
 
 export default function TrainerPortalPage() {
@@ -59,19 +62,19 @@ export default function TrainerPortalPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
+    <div className="min-h-screen bg-mesh-dark text-white flex flex-col selection:bg-primary selection:text-white">
       <Navbar />
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div className="mb-8">
-          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-blue-600">
-            <Dumbbell className="h-4 w-4" />
-            <span>Trainer Workspace</span>
+          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-cyan-400">
+            <Zap className="h-4 w-4" />
+            <span>Trainer Operational Workspace</span>
           </div>
-          <h1 className="text-3xl font-extrabold text-slate-900 mt-1">
-            Assigned Classes & Attendance
+          <h1 className="text-3xl font-black text-white tracking-tight mt-1">
+            Assigned Classes &amp; Member Attendance
           </h1>
-          <p className="text-xs text-slate-500 mt-1">
+          <p className="text-xs text-zinc-400 mt-1">
             Review your upcoming sessions and mark trainee attendance in real-time.
           </p>
         </div>
@@ -79,155 +82,133 @@ export default function TrainerPortalPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Assigned Sessions List */}
           <div className="space-y-4">
-            <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider">
-              Upcoming Sessions
-            </h3>
+            <h2 className="text-sm font-bold uppercase tracking-wider text-zinc-300">
+              Assigned Sessions ({sessions.length})
+            </h2>
 
             {loading ? (
-              <div className="p-8 text-center text-slate-400 text-xs">Loading sessions...</div>
-            ) : sessions.length === 0 ? (
-              <div className="p-8 bg-white rounded-2xl border border-slate-200 text-center text-xs text-slate-400">
-                No sessions scheduled.
-              </div>
-            ) : (
-              sessions.map((s) => {
-                const startsAt = new Date(s.startsAt);
-                const isSelected = selectedSession?.id === s.id;
-
-                return (
-                  <button
+              <div className="text-xs text-zinc-500 py-8">Loading sessions...</div>
+            ) : sessions.length > 0 ? (
+              <div className="space-y-3">
+                {sessions.map((s) => (
+                  <div
                     key={s.id}
                     onClick={() => loadSessionDetails(s.id)}
-                    className={`w-full text-left p-4 rounded-2xl border transition-all ${
-                      isSelected
-                        ? 'bg-blue-50/70 border-blue-400 shadow-sm'
-                        : 'bg-white border-slate-200 hover:border-slate-300'
+                    className={`glass-card-interactive p-4 rounded-2xl cursor-pointer ${
+                      selectedSession?.id === s.id
+                        ? 'border-primary shadow-glow-orange bg-white/[0.08]'
+                        : 'border-white/[0.06]'
                     }`}
                   >
-                    <div className="flex items-center justify-between text-xs mb-1">
-                      <span className="font-bold text-blue-600 bg-blue-100/60 px-2 py-0.5 rounded">
-                        {s.fitnessClass?.category?.name || 'Class'}
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-white truncate">
+                        {s.class?.name || 'Class Session'}
                       </span>
-                      <span className="text-[11px] font-semibold text-slate-500">
-                        {s.bookedCount} / {s.capacity} Enrolled
+                      <span className="px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20 text-[10px] font-bold">
+                        {s.status}
                       </span>
                     </div>
 
-                    <h4 className="text-base font-bold text-slate-900">
-                      {s.fitnessClass?.name}
-                    </h4>
-
-                    <div className="mt-2 flex items-center gap-3 text-xs text-slate-500">
-                      <div className="flex items-center gap-1">
-                        <Calendar className="h-3.5 w-3.5 text-slate-400" />
-                        <span>
-                          {startsAt.toLocaleDateString([], { month: 'short', day: 'numeric' })}
-                        </span>
+                    <div className="mt-2 text-xs text-zinc-400 space-y-1">
+                      <div className="flex items-center gap-1.5">
+                        <Clock className="h-3.5 w-3.5 text-amber-400" />
+                        <span>{s.startTime ? new Date(s.startTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '07:00 AM'}</span>
                       </div>
-                      <div className="flex items-center gap-1">
-                        <Clock className="h-3.5 w-3.5 text-slate-400" />
-                        <span>
-                          {startsAt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                        </span>
+                      <div className="flex items-center gap-1.5">
+                        <MapPin className="h-3.5 w-3.5 text-primary" />
+                        <span>{s.branch?.name || 'FitZone Mirpur'} &bull; {s.room?.name || 'Studio A'}</span>
                       </div>
                     </div>
-                  </button>
-                );
-              })
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="glass-card rounded-2xl p-6 text-xs text-zinc-400 text-center">
+                No sessions assigned to your profile today.
+              </div>
             )}
           </div>
 
-          {/* Session Attendance Details */}
-          <div className="lg:col-span-2">
+          {/* Session Roster Details & Check-In */}
+          <div className="lg:col-span-2 space-y-4">
+            <h2 className="text-sm font-bold uppercase tracking-wider text-zinc-300">
+              Live Roster &amp; Member Check-in
+            </h2>
+
             {selectedSession ? (
-              <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-6">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+              <div className="glass-card rounded-3xl p-6 border border-white/[0.08] space-y-6">
+                <div className="flex items-start justify-between pb-6 border-b border-white/[0.06]">
                   <div>
-                    <span className="text-xs font-bold text-primary bg-orange-50 px-2.5 py-1 rounded">
-                      {selectedSession.branch?.name}
+                    <span className="px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-bold uppercase tracking-wider">
+                      Active Class Roster
                     </span>
-                    <h2 className="text-2xl font-black text-slate-900 mt-2">
-                      {selectedSession.fitnessClass?.name}
-                    </h2>
-                    <p className="text-xs text-slate-500 mt-1">
-                      {selectedSession.fitnessClass?.description}
+                    <h3 className="text-2xl font-black text-white mt-2">
+                      {selectedSession.class?.name}
+                    </h3>
+                    <p className="text-xs text-zinc-400 mt-1">
+                      {selectedSession.branch?.name} &bull; {selectedSession.room?.name}
                     </p>
                   </div>
-
-                  <div className="text-right sm:text-right">
-                    <div className="text-2xl font-black text-slate-900">
-                      {selectedSession.bookedCount} / {selectedSession.capacity}
-                    </div>
-                    <div className="text-xs text-slate-400 font-medium">Class Attendance Cap</div>
+                  <div className="text-right">
+                    <p className="text-xs text-zinc-400 font-bold uppercase tracking-wider">Confirmed</p>
+                    <p className="text-3xl font-black text-white">
+                      {selectedSession.bookings?.length || 0} / {selectedSession.capacity || 20}
+                    </p>
                   </div>
                 </div>
 
-                {/* Enrolled Trainees List */}
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <h4 className="text-sm font-bold text-slate-800">
-                      Enrolled Trainees ({selectedSession.bookings?.length || 0})
-                    </h4>
-                    <span className="text-xs text-slate-400">1-Click Check-in for Trainees</span>
-                  </div>
-
-                  {selectedSession.bookings?.length === 0 ? (
-                    <div className="p-8 text-center text-xs text-slate-400 italic bg-slate-50 rounded-xl">
-                      No members have booked this occurrence yet.
-                    </div>
-                  ) : (
-                    <div className="divide-y divide-slate-100 border border-slate-100 rounded-xl overflow-hidden">
-                      {selectedSession.bookings?.map((b: any) => {
-                        const isAttended = b.attendance?.status === 'PRESENT';
-
-                        return (
-                          <div
-                            key={b.id}
-                            className="p-3.5 bg-white flex items-center justify-between hover:bg-slate-50 transition-colors"
-                          >
-                            <div className="flex items-center gap-3">
-                              <div className="h-9 w-9 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-xs">
-                                {b.member?.user?.firstName?.[0]}
-                              </div>
-                              <div>
-                                <div className="font-bold text-slate-900 text-xs">
-                                  {b.member?.user?.firstName} {b.member?.user?.lastName}
-                                </div>
-                                <div className="text-[10px] text-slate-400">
-                                  {b.member?.user?.email}
-                                </div>
-                              </div>
+                {/* Member List */}
+                <div className="space-y-3">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-zinc-400">
+                    Registered Members
+                  </h4>
+                  {selectedSession.bookings?.length > 0 ? (
+                    <div className="divide-y divide-white/[0.06]">
+                      {selectedSession.bookings.map((b: any) => (
+                        <div key={b.id} className="py-3 flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <div className="h-9 w-9 rounded-full bg-white/[0.05] border border-white/[0.08] text-white flex items-center justify-center font-bold text-xs">
+                              {b.user?.firstName?.[0] || 'M'}
                             </div>
+                            <div>
+                              <p className="text-xs font-bold text-white">
+                                {b.user?.firstName} {b.user?.lastName}
+                              </p>
+                              <p className="text-[10px] text-zinc-400">{b.user?.email}</p>
+                            </div>
+                          </div>
 
-                            {isAttended ? (
-                              <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-bold border border-emerald-200">
-                                <CheckCircle2 className="h-4 w-4" />
-                                <span>Present</span>
-                              </span>
-                            ) : (
+                          <div className="flex items-center gap-3">
+                            <span className="px-2 py-0.5 rounded-full bg-white/[0.05] text-[10px] font-bold text-zinc-300">
+                              {b.status}
+                            </span>
+                            {b.status === 'CONFIRMED' && (
                               <button
                                 onClick={() => handleCheckInMember(b.id)}
-                                className="px-3.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-sm transition-colors flex items-center gap-1"
+                                className="px-3 py-1.5 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold transition-colors shadow-sm"
                               >
-                                <CheckCircle2 className="h-3.5 w-3.5" />
-                                <span>Check In</span>
+                                Mark Present
                               </button>
                             )}
                           </div>
-                        );
-                      })}
+                        </div>
+                      ))}
                     </div>
+                  ) : (
+                    <p className="text-xs text-zinc-500 py-4">No member bookings yet for this session.</p>
                   )}
                 </div>
               </div>
             ) : (
-              <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center text-slate-400 text-sm">
-                Select a class occurrence to view enrolled trainees.
+              <div className="glass-card rounded-3xl p-12 text-center text-xs text-zinc-400 border border-white/[0.06]">
+                Select a class session on the left to review trainee roster and mark attendance.
               </div>
             )}
           </div>
         </div>
       </main>
+
+      <Footer />
     </div>
   );
 }

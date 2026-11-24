@@ -17,6 +17,11 @@ import {
   Sparkles,
   Building2,
   Lock,
+  Layers,
+  ChevronRight,
+  MapPin,
+  Check,
+  Zap,
 } from 'lucide-react';
 
 export default function MarketingPage() {
@@ -48,191 +53,189 @@ export default function MarketingPage() {
     : classes;
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-dark-950 text-white selection:bg-primary selection:text-white">
       <Navbar />
 
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-slate-950 text-white py-24 sm:py-32">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(249,115,22,0.25),rgba(255,255,255,0))]" />
+      <section className="relative overflow-hidden pt-20 pb-28 lg:pt-28 lg:pb-36 bg-mesh-dark">
+        {/* Glow light rays */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-primary/20 rounded-full blur-[150px] pointer-events-none" />
+        <div className="absolute top-1/3 -left-40 w-[450px] h-[450px] bg-accent-violet/10 rounded-full blur-[140px] pointer-events-none" />
+
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl space-y-6">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-400 text-xs font-semibold tracking-wide">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/25 text-primary text-xs font-bold tracking-wide">
               <Sparkles className="h-4 w-4" />
-              <span>Multi-Tenant Gym SaaS Platform 2.0</span>
+              <span>Multi-Tenant Enterprise Gym SaaS 2.0</span>
             </div>
 
-            <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight leading-[1.1]">
+            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight leading-[1.05]">
               Scale Your Gym Network. <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-amber-400 to-amber-200">
+              <span className="text-gradient-primary">
                 Zero Overbooking.
               </span>
             </h1>
 
-            <p className="text-lg text-slate-300 leading-relaxed font-light">
-              Full-production multi-tenant platform architected for modern gym businesses. Manage
-              multiple branches, coordinate trainers, prevent booking collisions with row-level
-              locking, and automate waitlists in real-time.
+            <p className="text-base sm:text-lg text-zinc-300 leading-relaxed font-light max-w-2xl">
+              Engineered for multi-branch gym chains, fitness studios, and combat academies.
+              Manage independent organizations, eliminate double-bookings with database row-level locking,
+              automate waitlists, and coordinate trainers in real-time.
             </p>
 
-            <div className="flex flex-wrap items-center gap-4 pt-4">
+            <div className="flex flex-wrap items-center gap-3 pt-4">
               <Link
                 href="/member/classes"
-                className="flex items-center gap-2 px-6 py-3.5 rounded-xl bg-primary hover:bg-orange-600 text-white font-semibold shadow-lg shadow-orange-500/25 transition-all text-sm"
+                className="flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-gradient-to-r from-primary to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold text-xs uppercase tracking-wider shadow-xl shadow-primary/30 border border-primary/40 transition-all hover:scale-[1.02] active:scale-[0.98]"
               >
                 <Calendar className="h-4 w-4" />
                 <span>Book Classes (Member)</span>
               </Link>
               <Link
                 href="/dashboard/overview"
-                className="flex items-center gap-2 px-6 py-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-semibold border border-slate-700 transition-all text-sm"
+                className="flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-white/[0.05] hover:bg-white/[0.1] text-zinc-100 font-bold text-xs uppercase tracking-wider border border-white/[0.1] transition-all hover:scale-[1.02] active:scale-[0.98]"
               >
-                <Building2 className="h-4 w-4" />
-                <span>Open Gym Dashboard</span>
+                <Building2 className="h-4 w-4 text-primary" />
+                <span>Gym Dashboard</span>
               </Link>
               <Link
                 href="/admin"
-                className="flex items-center gap-2 px-6 py-3.5 rounded-xl bg-purple-950/60 hover:bg-purple-900/60 text-purple-200 font-semibold border border-purple-800/40 transition-all text-sm"
+                className="flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-violet-500/10 hover:bg-violet-500/20 text-violet-300 font-bold text-xs uppercase tracking-wider border border-violet-500/30 transition-all hover:scale-[1.02] active:scale-[0.98]"
               >
-                <ShieldCheck className="h-4 w-4" />
+                <ShieldCheck className="h-4 w-4 text-violet-400" />
                 <span>Super Admin</span>
               </Link>
             </div>
 
-            {/* Quick Demo Credentials Banner */}
-            <div className="mt-8 rounded-xl bg-slate-900/80 border border-slate-800 p-4 text-xs text-slate-300">
-              <div className="font-semibold text-orange-400 mb-2 flex items-center gap-1.5">
-                <Lock className="h-3.5 w-3.5" />
-                <span>Pre-configured Demo Accounts (Instant Test Access):</span>
+            {/* Quick Metrics Strip */}
+            <div className="grid grid-cols-3 gap-4 pt-8 border-t border-white/[0.08] max-w-xl">
+              <div>
+                <p className="text-2xl font-black text-white">40k+</p>
+                <p className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider mt-0.5">Bookings Processed</p>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                <div className="bg-slate-950/60 p-2 rounded border border-slate-800/80">
-                  <div className="text-slate-400">Gym Owner:</div>
-                  <div className="font-mono text-white">owner@fitzone.com</div>
-                  <div className="text-slate-500">Pass: 123456</div>
-                </div>
-                <div className="bg-slate-950/60 p-2 rounded border border-slate-800/80">
-                  <div className="text-slate-400">Trainer:</div>
-                  <div className="font-mono text-white">trainer@fitzone.com</div>
-                  <div className="text-slate-500">Pass: 123456</div>
-                </div>
-                <div className="bg-slate-950/60 p-2 rounded border border-slate-800/80">
-                  <div className="text-slate-400">Member:</div>
-                  <div className="font-mono text-white">member@fitzone.com</div>
-                  <div className="text-slate-500">Pass: 123456</div>
-                </div>
+              <div>
+                <p className="text-2xl font-black text-emerald-400">100%</p>
+                <p className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider mt-0.5">Concurrency Safe</p>
+              </div>
+              <div>
+                <p className="text-2xl font-black text-primary">5 Portals</p>
+                <p className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider mt-0.5">Role-Based Access</p>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Feature Highlights Grid */}
-      <section className="py-16 bg-white border-b border-slate-100">
+      {/* Architecture Highlights Section */}
+      <section className="py-20 border-y border-white/[0.06] bg-dark-900/40 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div className="flex items-start gap-3.5">
-              <div className="p-2.5 rounded-xl bg-orange-50 text-primary">
-                <ShieldCheck className="h-6 w-6" />
-              </div>
-              <div>
-                <h3 className="text-base font-bold text-slate-900">Tenant Isolation</h3>
-                <p className="text-xs text-slate-500 mt-1">
-                  Row-level security boundary per organization ensuring zero cross-tenant leakage.
-                </p>
-              </div>
-            </div>
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <span className="text-[11px] font-bold uppercase tracking-widest text-primary">
+              Core Capabilities
+            </span>
+            <h2 className="text-3xl font-black tracking-tight text-white mt-2">
+              Architected for Enterprise Gym Operations
+            </h2>
+            <p className="text-xs text-zinc-400 mt-2">
+              Clean separation of concerns with tenant isolation and automated workflows.
+            </p>
+          </div>
 
-            <div className="flex items-start gap-3.5">
-              <div className="p-2.5 rounded-xl bg-emerald-50 text-emerald-600">
-                <Lock className="h-6 w-6" />
-              </div>
-              <div>
-                <h3 className="text-base font-bold text-slate-900">No Overbooking</h3>
-                <p className="text-xs text-slate-500 mt-1">
-                  PostgreSQL transactional row locking (<code className="font-mono">FOR UPDATE</code>) ensures strict capacity integrity.
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-3.5">
-              <div className="p-2.5 rounded-xl bg-blue-50 text-blue-600">
-                <Users className="h-6 w-6" />
-              </div>
-              <div>
-                <h3 className="text-base font-bold text-slate-900">Auto Waitlist</h3>
-                <p className="text-xs text-slate-500 mt-1">
-                  Immediate FIFO member promotion upon booking cancellation.
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-3.5">
-              <div className="p-2.5 rounded-xl bg-purple-50 text-purple-600">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="glass-card rounded-2xl p-6 border border-white/[0.08] relative group">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary border border-primary/20 mb-4 group-hover:scale-110 transition-transform">
                 <Building2 className="h-6 w-6" />
               </div>
-              <div>
-                <h3 className="text-base font-bold text-slate-900">Multi-Branch</h3>
-                <p className="text-xs text-slate-500 mt-1">
-                  Coordinate Mirpur, Gulshan, and future physical branches under one unified SaaS account.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Classes Catalog Section */}
-      <section id="classes" className="py-20 bg-slate-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
-            <div>
-              <div className="text-xs font-bold uppercase tracking-wider text-primary mb-1">
-                Fitness Programs
-              </div>
-              <h2 className="text-3xl font-extrabold text-slate-900">
-                World-Class Gym Sessions
-              </h2>
-              <p className="text-sm text-slate-500 mt-1">
-                Browse high-intensity, mindfulness, and strength programs across all branches.
+              <h3 className="text-base font-bold text-white">Multi-Tenant Isolation</h3>
+              <p className="text-xs text-zinc-400 mt-2 leading-relaxed font-light">
+                Every gym organization owns an isolated tenant domain. Branches, trainers, and data are strictly bound to organization IDs.
               </p>
             </div>
 
-            {/* Category Filter Pills */}
-            <div className="flex flex-wrap items-center gap-2">
-              <button
-                onClick={() => setSelectedCategory('')}
-                className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all ${
-                  selectedCategory === ''
-                    ? 'bg-slate-900 text-white shadow-sm'
-                    : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-100'
-                }`}
-              >
-                All Classes
-              </button>
-              {categories.map((cat) => (
-                <button
-                  key={cat.id}
-                  onClick={() => setSelectedCategory(cat.id)}
-                  className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all ${
-                    selectedCategory === cat.id
-                      ? 'bg-primary text-white shadow-sm'
-                      : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-100'
-                  }`}
-                >
-                  {cat.name}
-                </button>
-              ))}
+            <div className="glass-card rounded-2xl p-6 border border-white/[0.08] relative group">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 mb-4 group-hover:scale-110 transition-transform">
+                <Lock className="h-6 w-6" />
+              </div>
+              <h3 className="text-base font-bold text-white">Zero Overbooking Engine</h3>
+              <p className="text-xs text-zinc-400 mt-2 leading-relaxed font-light">
+                Pessimistic row-level locking guarantees that concurrent member bookings never exceed physical studio capacity.
+              </p>
+            </div>
+
+            <div className="glass-card rounded-2xl p-6 border border-white/[0.08] relative group">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/20 mb-4 group-hover:scale-110 transition-transform">
+                <Calendar className="h-6 w-6" />
+              </div>
+              <h3 className="text-base font-bold text-white">Automated Waitlists</h3>
+              <p className="text-xs text-zinc-400 mt-2 leading-relaxed font-light">
+                When a class fills up, members are placed in a FIFO queue. Cancellations automatically promote the next member.
+              </p>
+            </div>
+
+            <div className="glass-card rounded-2xl p-6 border border-white/[0.08] relative group">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-violet-500/10 text-violet-400 border border-violet-500/20 mb-4 group-hover:scale-110 transition-transform">
+                <ShieldCheck className="h-6 w-6" />
+              </div>
+              <h3 className="text-base font-bold text-white">RBAC &amp; JWT Security</h3>
+              <p className="text-xs text-zinc-400 mt-2 leading-relaxed font-light">
+                Dual-token rotation (15m access, 7d refresh) with strict role guards: Super Admin, Owner, Manager, Trainer, Member.
+              </p>
             </div>
           </div>
+        </div>
+      </section>
 
-          {/* Classes Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredClasses.map((item) => (
+      {/* Class Curriculum Explorer Section */}
+      <section id="classes" className="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
+          <div>
+            <span className="text-[11px] font-bold uppercase tracking-widest text-primary">
+              Live Curriculum Explorer
+            </span>
+            <h2 className="text-3xl font-black tracking-tight text-white mt-1">
+              Featured Fitness Programs
+            </h2>
+            <p className="text-xs text-zinc-400 mt-1">
+              Synced live with PostgreSQL and Cloudinary asset management.
+            </p>
+          </div>
+
+          {/* Category Filter Pills */}
+          <div className="flex flex-wrap items-center gap-2 p-1.5 bg-white/[0.03] border border-white/[0.06] rounded-2xl">
+            <button
+              onClick={() => setSelectedCategory('')}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all ${
+                selectedCategory === ''
+                  ? 'bg-primary text-white shadow-md shadow-primary/25'
+                  : 'text-zinc-400 hover:text-white'
+              }`}
+            >
+              All Classes
+            </button>
+            {categories.map((cat) => (
+              <button
+                key={cat.id}
+                onClick={() => setSelectedCategory(cat.id)}
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold uppercase tracking-wider transition-all ${
+                  selectedCategory === cat.id
+                    ? 'bg-primary text-white shadow-md shadow-primary/25'
+                    : 'text-zinc-400 hover:text-white'
+                }`}
+              >
+                {cat.name}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Classes Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredClasses.length > 0 ? (
+            filteredClasses.map((item) => (
               <div
                 key={item.id}
-                className="group flex flex-col rounded-2xl bg-white border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition-all"
+                className="glass-card rounded-3xl overflow-hidden border border-white/[0.08] flex flex-col group"
               >
-                <div className="relative h-52 w-full bg-slate-100 overflow-hidden">
+                <div className="relative h-52 w-full overflow-hidden bg-dark-900">
                   <img
                     src={
                       item.image ||
@@ -241,158 +244,220 @@ export default function MarketingPage() {
                     alt={item.name}
                     className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
-                  <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm text-slate-800 text-xs font-bold px-2.5 py-1 rounded-md shadow-sm">
-                    {item.category?.name || 'Fitness'}
+                  <div className="absolute inset-0 bg-gradient-to-t from-dark-950 via-dark-950/40 to-transparent" />
+                  <div className="absolute top-3.5 left-3.5">
+                    <span className="px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-[10px] font-bold uppercase tracking-wider text-primary">
+                      {item.level || 'All Levels'}
+                    </span>
                   </div>
-                  <div className="absolute top-3 right-3 bg-slate-900/80 backdrop-blur-sm text-white text-xs font-medium px-2 py-1 rounded-md">
-                    {item.level || 'All Levels'}
+                  <div className="absolute top-3.5 right-3.5">
+                    <span className="px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-[10px] font-bold text-zinc-300 flex items-center gap-1">
+                      <Clock className="h-3 w-3 text-amber-400" />
+                      <span>{item.duration} min</span>
+                    </span>
                   </div>
                 </div>
 
-                <div className="p-6 flex flex-col flex-1 justify-between gap-4">
+                <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
                   <div>
-                    <h3 className="text-xl font-bold text-slate-900 group-hover:text-primary transition-colors">
+                    <h3 className="text-lg font-bold text-white group-hover:text-primary transition-colors">
                       {item.name}
                     </h3>
-                    <p className="text-xs text-slate-500 mt-2 line-clamp-2 leading-relaxed">
-                      {item.description || 'Elevate your fitness journey with our elite trainers.'}
+                    <p className="text-xs text-zinc-400 mt-1 line-clamp-2 leading-relaxed font-light">
+                      {item.description || 'Professional athletic training session with certified coaching.'}
                     </p>
                   </div>
 
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between text-xs text-slate-500 border-t border-slate-100 pt-3">
-                      <div className="flex items-center gap-1.5">
-                        <Clock className="h-4 w-4 text-slate-400" />
-                        <span>{item.duration} mins</span>
-                      </div>
-                      <div className="flex items-center gap-1.5">
-                        <Users className="h-4 w-4 text-slate-400" />
-                        <span>Cap: {item.capacity} trainees</span>
-                      </div>
+                  <div className="pt-4 border-t border-white/[0.06] flex items-center justify-between">
+                    <div className="text-xs text-zinc-400 flex items-center gap-1.5">
+                      <Users className="h-3.5 w-3.5 text-zinc-500" />
+                      <span>Capacity: <strong className="text-white">{item.capacity}</strong></span>
                     </div>
 
                     <Link
                       href="/member/classes"
-                      className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-primary hover:bg-orange-600 text-white font-semibold text-xs transition-colors"
+                      className="inline-flex items-center gap-1 text-xs font-bold text-primary hover:text-orange-400 transition-colors"
                     >
-                      <span>View & Book Occurrence</span>
-                      <ArrowRight className="h-3.5 w-3.5" />
+                      <span>Book Session</span>
+                      <ChevronRight className="h-3.5 w-3.5" />
                     </Link>
                   </div>
                 </div>
               </div>
-            ))}
+            ))
+          ) : (
+            <div className="col-span-full text-center py-12 glass-card rounded-3xl border border-white/[0.06] text-zinc-400 text-xs">
+              {loading ? 'Loading classes from database...' : 'No classes found in this category.'}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Branches Showcase Section */}
+      <section className="py-20 border-t border-white/[0.06] bg-dark-900/30">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12">
+            <div>
+              <span className="text-[11px] font-bold uppercase tracking-widest text-primary">
+                Multi-Branch Infrastructure
+              </span>
+              <h2 className="text-3xl font-black tracking-tight text-white mt-1">
+                FitZone Flagship Locations
+              </h2>
+            </div>
+            <p className="text-xs text-zinc-400 max-w-md">
+              Each branch operates dedicated fitness studios, trainer schedules, and member access controls.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="glass-card rounded-3xl p-6 sm:p-8 border border-white/[0.08] relative overflow-hidden">
+              <div className="flex items-start justify-between">
+                <div>
+                  <span className="px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-bold uppercase tracking-wider">
+                    Branch A &bull; Open Now
+                  </span>
+                  <h3 className="text-2xl font-black text-white mt-3">FitZone Mirpur Center</h3>
+                  <p className="text-xs text-zinc-400 mt-1 flex items-center gap-1.5">
+                    <MapPin className="h-3.5 w-3.5 text-primary shrink-0" />
+                    <span>Plot 12, Main Road, Section 2, Dhaka</span>
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-6 pt-6 border-t border-white/[0.06] grid grid-cols-2 gap-4 text-xs">
+                <div>
+                  <p className="text-zinc-500 font-semibold uppercase text-[10px] tracking-wider">Studios</p>
+                  <p className="text-zinc-200 font-medium mt-0.5">Studio A (Yoga) &bull; Studio B (HIIT)</p>
+                </div>
+                <div>
+                  <p className="text-zinc-500 font-semibold uppercase text-[10px] tracking-wider">Timezone</p>
+                  <p className="text-zinc-200 font-medium mt-0.5">Asia/Dhaka (GMT+6)</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="glass-card rounded-3xl p-6 sm:p-8 border border-white/[0.08] relative overflow-hidden">
+              <div className="flex items-start justify-between">
+                <div>
+                  <span className="px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-bold uppercase tracking-wider">
+                    Branch B &bull; Open Now
+                  </span>
+                  <h3 className="text-2xl font-black text-white mt-3">FitZone Gulshan Elite</h3>
+                  <p className="text-xs text-zinc-400 mt-1 flex items-center gap-1.5">
+                    <MapPin className="h-3.5 w-3.5 text-primary shrink-0" />
+                    <span>Road 45, Gulshan-2, Dhaka</span>
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-6 pt-6 border-t border-white/[0.06] grid grid-cols-2 gap-4 text-xs">
+                <div>
+                  <p className="text-zinc-500 font-semibold uppercase text-[10px] tracking-wider">Studios</p>
+                  <p className="text-zinc-200 font-medium mt-0.5">Reformer Pilates &bull; Strength Zone</p>
+                </div>
+                <div>
+                  <p className="text-zinc-500 font-semibold uppercase text-[10px] tracking-wider">Timezone</p>
+                  <p className="text-zinc-200 font-medium mt-0.5">Asia/Dhaka (GMT+6)</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Memberships Pricing Section */}
-      <section id="pricing" className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-16">
-            <div className="text-xs font-bold uppercase tracking-wider text-primary mb-1">
-              Membership Plans
+      {/* Pricing Section */}
+      <section id="pricing" className="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+        <div className="text-center max-w-2xl mx-auto mb-16">
+          <span className="text-[11px] font-bold uppercase tracking-widest text-primary">
+            SaaS Subscription Tiers
+          </span>
+          <h2 className="text-3xl font-black tracking-tight text-white mt-1">
+            Predictable Platform Pricing
+          </h2>
+          <p className="text-xs text-zinc-400 mt-2">
+            Every plan includes multi-branch management, waitlist automation, and role-based staff access.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {/* Starter */}
+          <div className="glass-card rounded-3xl p-8 border border-white/[0.08] flex flex-col justify-between">
+            <div>
+              <span className="text-xs font-bold uppercase tracking-wider text-zinc-400">Starter</span>
+              <div className="mt-4 flex items-baseline gap-1">
+                <span className="text-4xl font-black text-white">$49</span>
+                <span className="text-xs text-zinc-400">/month</span>
+              </div>
+              <p className="text-xs text-zinc-400 mt-2">For single boutique fitness or combat studios.</p>
+              <ul className="mt-6 space-y-3 text-xs text-zinc-300">
+                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> 1 Physical Branch</li>
+                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> Up to 100 Members</li>
+                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> 5 Dedicated Trainers</li>
+                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> Class Booking Engine</li>
+              </ul>
             </div>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900">
-              Simple, Transparent Pricing
-            </h2>
-            <p className="text-sm text-slate-500 mt-2">
-              Join FitZone and gain direct access to our world-class trainers and group workout schedules.
-            </p>
+            <Link
+              href="/register"
+              className="mt-8 w-full py-3 rounded-xl bg-white/[0.06] hover:bg-white/[0.1] text-white text-xs font-bold uppercase tracking-wider text-center border border-white/[0.1] transition-all"
+            >
+              Start Free Trial
+            </Link>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 max-w-4xl mx-auto gap-8">
-            {/* Plan 1 */}
-            <div className="rounded-2xl border border-slate-200 p-8 flex flex-col justify-between bg-white shadow-sm hover:border-slate-300 transition-all">
-              <div>
-                <div className="text-xs font-bold uppercase tracking-wider text-slate-400">
-                  Standard Member
-                </div>
-                <div className="mt-4 flex items-baseline gap-1">
-                  <span className="text-4xl font-extrabold text-slate-900">৳2,500</span>
-                  <span className="text-xs font-medium text-slate-500">/ month</span>
-                </div>
-                <p className="text-xs text-slate-500 mt-2">
-                  Ideal for casual trainees looking for weekly classes and single-branch access.
-                </p>
-
-                <ul className="mt-6 space-y-3 text-xs text-slate-600">
-                  <li className="flex items-center gap-2.5">
-                    <CheckCircle className="h-4 w-4 text-emerald-500" />
-                    <span>Up to 12 scheduled classes per month</span>
-                  </li>
-                  <li className="flex items-center gap-2.5">
-                    <CheckCircle className="h-4 w-4 text-emerald-500" />
-                    <span>Access to FitZone Mirpur Center</span>
-                  </li>
-                  <li className="flex items-center gap-2.5">
-                    <CheckCircle className="h-4 w-4 text-emerald-500" />
-                    <span>Self-service booking & cancellation</span>
-                  </li>
-                  <li className="flex items-center gap-2.5">
-                    <CheckCircle className="h-4 w-4 text-emerald-500" />
-                    <span>Waitlist auto-promotion</span>
-                  </li>
-                </ul>
-              </div>
-
-              <Link
-                href="/register"
-                className="mt-8 flex items-center justify-center w-full py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs transition-colors"
-              >
-                Join Standard
-              </Link>
-            </div>
-
-            {/* Plan 2 */}
-            <div className="rounded-2xl border-2 border-primary p-8 flex flex-col justify-between bg-gradient-to-b from-orange-50/40 to-white shadow-lg shadow-orange-500/10 relative">
-              <div className="absolute -top-3.5 right-6 bg-primary text-white text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">
+          {/* Professional - Highlighted */}
+          <div className="glass-card rounded-3xl p-8 border-2 border-primary shadow-glow-orange flex flex-col justify-between relative">
+            <div className="absolute -top-3.5 left-1/2 -translate-x-1/2">
+              <span className="px-3 py-1 rounded-full bg-primary text-white text-[10px] font-bold uppercase tracking-widest shadow-md">
                 Most Popular
-              </div>
-
-              <div>
-                <div className="text-xs font-bold uppercase tracking-wider text-primary">
-                  All-Access VIP
-                </div>
-                <div className="mt-4 flex items-baseline gap-1">
-                  <span className="text-4xl font-extrabold text-slate-900">৳4,500</span>
-                  <span className="text-xs font-medium text-slate-500">/ month</span>
-                </div>
-                <p className="text-xs text-slate-500 mt-2">
-                  Complete freedom. Multi-branch access across all Dhaka locations with unlimited bookings.
-                </p>
-
-                <ul className="mt-6 space-y-3 text-xs text-slate-600">
-                  <li className="flex items-center gap-2.5">
-                    <CheckCircle className="h-4 w-4 text-primary" />
-                    <span className="font-semibold text-slate-800">Unlimited class bookings</span>
-                  </li>
-                  <li className="flex items-center gap-2.5">
-                    <CheckCircle className="h-4 w-4 text-primary" />
-                    <span className="font-semibold text-slate-800">Multi-Branch Access (Mirpur & Gulshan)</span>
-                  </li>
-                  <li className="flex items-center gap-2.5">
-                    <CheckCircle className="h-4 w-4 text-primary" />
-                    <span>Priority waitlist position</span>
-                  </li>
-                  <li className="flex items-center gap-2.5">
-                    <CheckCircle className="h-4 w-4 text-primary" />
-                    <span>Complimentary locker & sauna</span>
-                  </li>
-                  <li className="flex items-center gap-2.5">
-                    <CheckCircle className="h-4 w-4 text-primary" />
-                    <span>Trainer 1-on-1 consultation session</span>
-                  </li>
-                </ul>
-              </div>
-
-              <Link
-                href="/register"
-                className="mt-8 flex items-center justify-center w-full py-3 rounded-xl bg-primary hover:bg-orange-600 text-white font-semibold text-xs shadow-md shadow-orange-500/20 transition-all"
-              >
-                Join All-Access VIP
-              </Link>
+              </span>
             </div>
+            <div>
+              <span className="text-xs font-bold uppercase tracking-wider text-primary">Professional</span>
+              <div className="mt-4 flex items-baseline gap-1">
+                <span className="text-4xl font-black text-white">$149</span>
+                <span className="text-xs text-zinc-400">/month</span>
+              </div>
+              <p className="text-xs text-zinc-400 mt-2">For growing gym networks and fitness clubs.</p>
+              <ul className="mt-6 space-y-3 text-xs text-zinc-300">
+                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> Up to 5 Branches</li>
+                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> Up to 1,000 Members</li>
+                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> 30 Trainers &amp; Coaches</li>
+                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> Automated Waitlist Engine</li>
+                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-primary" /> Cloudinary Media Uploads</li>
+              </ul>
+            </div>
+            <Link
+              href="/register"
+              className="mt-8 w-full py-3 rounded-xl bg-gradient-to-r from-primary to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white text-xs font-bold uppercase tracking-wider text-center shadow-lg shadow-primary/30 transition-all hover:scale-[1.02]"
+            >
+              Upgrade to Pro
+            </Link>
+          </div>
+
+          {/* Enterprise */}
+          <div className="glass-card rounded-3xl p-8 border border-white/[0.08] flex flex-col justify-between">
+            <div>
+              <span className="text-xs font-bold uppercase tracking-wider text-violet-400">Enterprise</span>
+              <div className="mt-4 flex items-baseline gap-1">
+                <span className="text-4xl font-black text-white">$399</span>
+                <span className="text-xs text-zinc-400">/month</span>
+              </div>
+              <p className="text-xs text-zinc-400 mt-2">For nationwide gym franchises and athletic chains.</p>
+              <ul className="mt-6 space-y-3 text-xs text-zinc-300">
+                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-violet-400" /> Up to 50 Branches</li>
+                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-violet-400" /> 10,000+ Members</li>
+                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-violet-400" /> 200 Trainers</li>
+                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-violet-400" /> Dedicated Neon Database Pool</li>
+                <li className="flex items-center gap-2"><Check className="h-4 w-4 text-violet-400" /> Custom Domain &amp; White-label</li>
+              </ul>
+            </div>
+            <Link
+              href="/register"
+              className="mt-8 w-full py-3 rounded-xl bg-white/[0.06] hover:bg-white/[0.1] text-white text-xs font-bold uppercase tracking-wider text-center border border-white/[0.1] transition-all"
+            >
+              Contact Enterprise
+            </Link>
           </div>
         </div>
       </section>

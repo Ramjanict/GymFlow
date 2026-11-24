@@ -11,6 +11,7 @@ import {
   Sparkles,
   Upload,
   X,
+  Image as ImageIcon,
 } from 'lucide-react';
 
 export default function DashboardClassesPage() {
@@ -100,20 +101,24 @@ export default function DashboardClassesPage() {
   };
 
   return (
-    <div className="space-y-6 max-w-7xl">
+    <div className="space-y-8 max-w-7xl">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black text-slate-900 tracking-tight">
-            Fitness Class Management
+          <span className="text-[10px] font-bold uppercase tracking-widest text-primary flex items-center gap-1.5 mb-1">
+            <Sparkles className="h-3 w-3" />
+            <span>Curriculum Management</span>
+          </span>
+          <h1 className="text-3xl font-black text-white tracking-tight">
+            Fitness Class Catalog
           </h1>
-          <p className="text-xs text-slate-500 mt-1">
+          <p className="text-xs text-zinc-400 mt-1">
             Define your gym&apos;s curriculum, capacity limits, and difficulty tiers.
           </p>
         </div>
 
         <button
           onClick={() => setModalOpen(true)}
-          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary hover:bg-orange-600 text-white font-semibold text-xs shadow-sm transition-colors w-fit"
+          className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-primary to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold text-xs uppercase tracking-wider shadow-lg shadow-primary/25 border border-primary/30 transition-all hover:scale-[1.02] w-fit"
         >
           <Plus className="h-4 w-4" />
           <span>Add New Fitness Class</span>
@@ -121,44 +126,45 @@ export default function DashboardClassesPage() {
       </div>
 
       {loading ? (
-        <div className="p-12 text-center text-slate-400 text-sm">Loading classes...</div>
+        <div className="p-12 text-center text-zinc-500 text-xs">Loading classes from database...</div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {classes.map((item) => (
             <div
               key={item.id}
-              className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm flex flex-col justify-between"
+              className="glass-card rounded-3xl overflow-hidden border border-white/[0.08] flex flex-col justify-between group"
             >
-              <div className="h-44 w-full bg-slate-100 relative">
+              <div className="h-48 w-full bg-dark-900 relative overflow-hidden">
                 <img
                   src={item.image}
                   alt={item.name}
-                  className="h-full w-full object-cover"
+                  className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
-                <span className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm text-[11px] font-bold px-2 py-0.5 rounded text-slate-800">
-                  {item.category?.name || 'Class'}
+                <div className="absolute inset-0 bg-gradient-to-t from-dark-950 via-dark-950/40 to-transparent" />
+                <span className="absolute top-3 left-3 bg-black/60 backdrop-blur-md text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full text-white border border-white/10">
+                  {item.category?.name || 'Program'}
                 </span>
-                <span className="absolute top-3 right-3 bg-slate-900/80 text-[10px] font-semibold text-white px-2 py-0.5 rounded">
+                <span className="absolute top-3 right-3 bg-black/60 backdrop-blur-md text-[10px] font-bold uppercase tracking-wider text-primary px-2.5 py-1 rounded-full border border-white/10">
                   {item.level}
                 </span>
               </div>
 
-              <div className="p-5 flex-1 flex flex-col justify-between gap-4">
+              <div className="p-6 flex-1 flex flex-col justify-between gap-4">
                 <div>
-                  <h3 className="text-lg font-bold text-slate-900">{item.name}</h3>
-                  <p className="text-xs text-slate-500 mt-1 line-clamp-2 leading-relaxed">
+                  <h3 className="text-lg font-bold text-white group-hover:text-primary transition-colors">{item.name}</h3>
+                  <p className="text-xs text-zinc-400 mt-1 line-clamp-2 leading-relaxed font-light">
                     {item.description}
                   </p>
                 </div>
 
-                <div className="flex items-center justify-between text-xs text-slate-600 border-t border-slate-100 pt-3">
+                <div className="flex items-center justify-between text-xs text-zinc-400 border-t border-white/[0.06] pt-3.5">
                   <div className="flex items-center gap-1.5">
-                    <Clock className="h-3.5 w-3.5 text-slate-400" />
+                    <Clock className="h-3.5 w-3.5 text-amber-400" />
                     <span>{item.duration} Mins</span>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <Users className="h-3.5 w-3.5 text-slate-400" />
-                    <span>Max {item.capacity} Trainees</span>
+                    <Users className="h-3.5 w-3.5 text-zinc-500" />
+                    <span>Max <strong className="text-white">{item.capacity}</strong> Trainees</span>
                   </div>
                 </div>
               </div>
@@ -169,13 +175,16 @@ export default function DashboardClassesPage() {
 
       {/* Create Class Modal */}
       {modalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/40 backdrop-blur-sm p-4">
-          <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-2xl border border-slate-100 max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-4 mb-4">
-              <h3 className="text-base font-bold text-slate-900">Add New Fitness Program</h3>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md p-4">
+          <div className="glass-panel rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-white/10 max-h-[90vh] overflow-y-auto custom-scrollbar">
+            <div className="flex items-center justify-between border-b border-white/[0.08] pb-4 mb-4">
+              <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                <Dumbbell className="h-5 w-5 text-primary" />
+                <span>Create Fitness Program</span>
+              </h3>
               <button
                 onClick={() => setModalOpen(false)}
-                className="text-slate-400 hover:text-slate-600"
+                className="text-zinc-400 hover:text-white p-1 rounded-lg hover:bg-white/[0.06] transition-colors"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -183,122 +192,134 @@ export default function DashboardClassesPage() {
 
             <form onSubmit={handleCreateClass} className="space-y-4 text-xs">
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">Class Name</label>
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-300">
+                  Class Program Name
+                </label>
                 <input
                   type="text"
                   required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="e.g. Olympic Weightlifting"
-                  className="w-full rounded-xl border border-slate-200 px-3.5 py-2 text-sm focus:outline-none focus:border-primary"
+                  placeholder="e.g. Olympic Lifting Mastery"
+                  className="mt-1.5 w-full rounded-xl glass-input px-3.5 py-2.5 text-xs text-white placeholder-zinc-500 focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-300">
+                  Description
+                </label>
+                <textarea
+                  rows={3}
+                  required
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  placeholder="Program overview and training expectations..."
+                  className="mt-1.5 w-full rounded-xl glass-input px-3.5 py-2.5 text-xs text-white placeholder-zinc-500 focus:outline-none"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Duration (Mins)</label>
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-300">
+                    Duration (Minutes)
+                  </label>
                   <input
                     type="number"
                     required
                     value={duration}
                     onChange={(e) => setDuration(e.target.value)}
-                    className="w-full rounded-xl border border-slate-200 px-3.5 py-2 text-sm focus:outline-none focus:border-primary"
+                    className="mt-1.5 w-full rounded-xl glass-input px-3.5 py-2.5 text-xs text-white focus:outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Max Capacity</label>
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-300">
+                    Max Capacity
+                  </label>
                   <input
                     type="number"
                     required
                     value={capacity}
                     onChange={(e) => setCapacity(e.target.value)}
-                    className="w-full rounded-xl border border-slate-200 px-3.5 py-2 text-sm focus:outline-none focus:border-primary"
+                    className="mt-1.5 w-full rounded-xl glass-input px-3.5 py-2.5 text-xs text-white focus:outline-none"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Category</label>
-                  <select
-                    value={categoryId}
-                    onChange={(e) => setCategoryId(e.target.value)}
-                    className="w-full rounded-xl border border-slate-200 px-3.5 py-2 text-sm focus:outline-none focus:border-primary"
-                  >
-                    <option value="">Select Category</option>
-                    {categories.map((cat) => (
-                      <option key={cat.id} value={cat.id}>
-                        {cat.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block font-semibold text-slate-700 mb-1">Difficulty Level</label>
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-300">
+                    Difficulty Tier
+                  </label>
                   <select
                     value={level}
                     onChange={(e) => setLevel(e.target.value)}
-                    className="w-full rounded-xl border border-slate-200 px-3.5 py-2 text-sm focus:outline-none focus:border-primary"
+                    className="mt-1.5 w-full rounded-xl glass-input px-3.5 py-2.5 text-xs text-white focus:outline-none bg-dark-900"
                   >
-                    <option value="Beginner">Beginner</option>
                     <option value="All Levels">All Levels</option>
+                    <option value="Beginner">Beginner</option>
                     <option value="Intermediate">Intermediate</option>
                     <option value="Advanced">Advanced</option>
                   </select>
                 </div>
-              </div>
-
-              <div>
-                <label className="block font-semibold text-slate-700 mb-1">Description</label>
-                <textarea
-                  rows={3}
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Outline benefits, equipment needed, and targets..."
-                  className="w-full rounded-xl border border-slate-200 p-3 text-sm focus:outline-none focus:border-primary"
-                />
+                <div>
+                  <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-300">
+                    Category
+                  </label>
+                  <select
+                    value={categoryId}
+                    onChange={(e) => setCategoryId(e.target.value)}
+                    className="mt-1.5 w-full rounded-xl glass-input px-3.5 py-2.5 text-xs text-white focus:outline-none bg-dark-900"
+                  >
+                    <option value="">Select Category</option>
+                    {categories.map((c) => (
+                      <option key={c.id} value={c.id}>
+                        {c.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
 
               {/* Cloudinary Image Upload */}
               <div>
-                <label className="block font-semibold text-slate-700 mb-1">
-                  Upload Cover Image (Cloudinary)
+                <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-300">
+                  Cover Image (Cloudinary Storage)
                 </label>
-                <div className="border-2 border-dashed border-slate-200 rounded-xl p-4 text-center hover:bg-slate-50 transition-colors">
-                  {imageUrl ? (
-                    <div className="relative h-28 w-full rounded-lg overflow-hidden">
-                      <img src={imageUrl} alt="Uploaded" className="h-full w-full object-cover" />
-                    </div>
-                  ) : (
-                    <label className="cursor-pointer flex flex-col items-center gap-1.5">
-                      <Upload className="h-6 w-6 text-slate-400" />
-                      <span className="text-slate-600 font-medium">Click to select photo</span>
-                      <span className="text-[10px] text-slate-400">PNG, JPG up to 10MB</span>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageUpload}
-                        className="hidden"
-                      />
-                    </label>
+                <div className="mt-1.5 flex items-center gap-3">
+                  <label className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/[0.05] hover:bg-white/[0.1] border border-white/[0.08] cursor-pointer text-xs font-semibold text-zinc-200 transition-colors">
+                    <Upload className="h-4 w-4 text-primary" />
+                    <span>Upload to Cloudinary</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      className="hidden"
+                    />
+                  </label>
+                  {imageUrl && (
+                    <span className="text-[11px] text-emerald-400 font-semibold flex items-center gap-1">
+                      <ImageIcon className="h-3.5 w-3.5" />
+                      <span>Ready</span>
+                    </span>
                   )}
                 </div>
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
+              <div className="pt-4 border-t border-white/[0.08] flex items-center justify-end gap-2.5">
                 <button
                   type="button"
                   onClick={() => setModalOpen(false)}
-                  className="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 font-semibold text-xs"
+                  className="px-4 py-2.5 rounded-xl text-xs font-semibold text-zinc-400 hover:text-white transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="px-5 py-2 rounded-xl bg-primary hover:bg-orange-600 text-white font-semibold text-xs transition-colors disabled:opacity-60"
+                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-primary to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold text-xs uppercase tracking-wider shadow-lg shadow-primary/25 border border-primary/30 transition-all hover:scale-[1.01] disabled:opacity-50"
                 >
-                  {submitting ? 'Creating...' : 'Create Class'}
+                  {submitting ? 'Creating...' : 'Create Program'}
                 </button>
               </div>
             </form>

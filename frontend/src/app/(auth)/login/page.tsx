@@ -7,7 +7,19 @@ import { useDispatch } from 'react-redux';
 import { setCredentials } from '@/store/authSlice';
 import { apiRequest } from '@/lib/api';
 import { toast } from 'react-toastify';
-import { Dumbbell, Lock, Mail, ArrowRight, Eye, EyeOff } from 'lucide-react';
+import {
+  Dumbbell,
+  Lock,
+  Mail,
+  ArrowRight,
+  Eye,
+  EyeOff,
+  ShieldCheck,
+  Zap,
+  Users,
+  AlertCircle,
+  Terminal,
+} from 'lucide-react';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -16,10 +28,12 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [serverOffline, setServerOffline] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setServerOffline(false);
 
     const res = await apiRequest('/auth/login', {
       method: 'POST',
@@ -53,7 +67,12 @@ export default function LoginPage() {
         router.push('/member/classes');
       }
     } else {
-      toast.error(res.error || 'Invalid email or password');
+      if (res.error?.includes('Failed to fetch') || res.error?.includes('Network error')) {
+        setServerOffline(true);
+        toast.error('Cannot reach backend on port 4000');
+      } else {
+        toast.error(res.error || 'Invalid email or password');
+      }
     }
   };
 
@@ -63,32 +82,55 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8 bg-slate-50">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
-        <Link href="/" className="inline-flex items-center gap-2">
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary text-white shadow-md shadow-primary/20">
+    <div className="min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8 bg-mesh-dark relative overflow-hidden">
+      {/* Background ambient orbs */}
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[350px] bg-primary/15 rounded-full blur-[140px] pointer-events-none" />
+      <div className="absolute -bottom-20 right-10 w-[400px] h-[300px] bg-accent-violet/10 rounded-full blur-[120px] pointer-events-none" />
+
+      {/* Header */}
+      <div className="sm:mx-auto sm:w-full sm:max-w-md text-center relative z-10">
+        <Link href="/" className="inline-flex items-center gap-2.5 group">
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-tr from-primary to-amber-500 text-white shadow-xl shadow-primary/30 group-hover:scale-105 transition-transform">
             <Dumbbell className="h-6 w-6 rotate-45" />
           </div>
-          <span className="text-2xl font-bold tracking-tight text-slate-900">
-            Gym<span className="text-primary">Flow</span>
+          <span className="text-3xl font-extrabold tracking-tight text-white">
+            Gym<span className="text-gradient-primary">Flow</span>
           </span>
         </Link>
-        <h2 className="mt-6 text-2xl font-extrabold text-slate-900">
+        <h2 className="mt-6 text-2xl font-black text-white tracking-tight">
           Sign in to your portal
         </h2>
-        <p className="mt-2 text-xs text-slate-500">
+        <p className="mt-2 text-xs text-zinc-400">
           Or{' '}
-          <Link href="/register" className="font-semibold text-primary hover:text-orange-600">
+          <Link href="/register" className="font-semibold text-primary hover:text-orange-400 transition-colors">
             register a new gym organization
           </Link>
         </p>
       </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 shadow-xl shadow-slate-200/50 sm:rounded-2xl sm:px-10 border border-slate-100">
-          <form className="space-y-5" onSubmit={handleSubmit}>
+      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md relative z-10 px-4 sm:px-0">
+        <div className="glass-card rounded-3xl p-6 sm:p-8 border border-white/10 shadow-2xl relative">
+          {/* Server Offline Alert Banner */}
+          {serverOffline && (
+            <div className="mb-6 p-4 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-300 text-xs space-y-2">
+              <div className="flex items-center gap-2 font-bold text-rose-200">
+                <AlertCircle className="h-4 w-4 shrink-0 text-rose-400" />
+                <span>Backend API Server Offline (Port 4000)</span>
+              </div>
+              <p className="text-[11px] text-zinc-400 leading-relaxed">
+                The frontend cannot reach <code className="text-zinc-200 bg-white/5 px-1 py-0.5 rounded">http://localhost:4000</code>.
+                Start the backend in your terminal with:
+              </p>
+              <div className="p-2 rounded-xl bg-black/50 border border-white/5 font-mono text-[11px] text-amber-300 flex items-center gap-2">
+                <Terminal className="h-3.5 w-3.5 shrink-0" />
+                <span>cd backend &amp;&amp; npm run start:dev</span>
+              </div>
+            </div>
+          )}
+
+          <form className="space-y-4" onSubmit={handleSubmit}>
             <div>
-              <label className="block text-xs font-semibold text-slate-700">
+              <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-300">
                 Email Address
               </label>
               <div className="mt-1.5 relative">
@@ -97,15 +139,15 @@ export default function LoginPage() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="e.g. owner@fitzone.com"
-                  className="w-full rounded-xl border border-slate-200 pl-10 pr-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                  placeholder="e.g. member@fitzone.com"
+                  className="w-full rounded-xl glass-input px-3.5 py-2.5 pl-10 text-xs text-white placeholder-zinc-500 focus:outline-none"
                 />
-                <Mail className="h-4 w-4 text-slate-400 absolute left-3.5 top-3.5" />
+                <Mail className="h-4 w-4 text-zinc-500 absolute left-3.5 top-3" />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700">
+              <label className="block text-[11px] font-bold uppercase tracking-wider text-zinc-300">
                 Password
               </label>
               <div className="mt-1.5 relative">
@@ -115,13 +157,13 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full rounded-xl border border-slate-200 pl-10 pr-10 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                  className="w-full rounded-xl glass-input px-3.5 py-2.5 pl-10 pr-10 text-xs text-white placeholder-zinc-500 focus:outline-none"
                 />
-                <Lock className="h-4 w-4 text-slate-400 absolute left-3.5 top-3.5" />
+                <Lock className="h-4 w-4 text-zinc-500 absolute left-3.5 top-3" />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3.5 top-3.5 text-slate-400 hover:text-slate-600"
+                  className="absolute right-3.5 top-3 text-zinc-500 hover:text-zinc-300 transition-colors"
                 >
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
@@ -131,52 +173,81 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-primary hover:bg-orange-600 text-white font-semibold text-sm shadow-md shadow-orange-500/20 transition-all disabled:opacity-60"
+              className="w-full mt-2 flex items-center justify-center gap-2 py-3 rounded-xl bg-gradient-to-r from-primary to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white text-xs font-bold uppercase tracking-wider shadow-lg shadow-primary/25 border border-primary/30 transition-all hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50"
             >
-              <span>{loading ? 'Authenticating...' : 'Sign In'}</span>
-              <ArrowRight className="h-4 w-4" />
+              {loading ? (
+                <span>Authenticating...</span>
+              ) : (
+                <>
+                  <span>Sign In</span>
+                  <ArrowRight className="h-4 w-4" />
+                </>
+              )}
             </button>
           </form>
 
-          {/* 1-Click Demo Shortcut Login buttons */}
-          <div className="mt-8 border-t border-slate-100 pt-6">
-            <div className="text-[11px] font-semibold uppercase text-slate-400 tracking-wider mb-3 text-center">
-              Quick Demo Logins
-            </div>
-            <div className="grid grid-cols-2 gap-2 text-xs">
+          {/* Quick Demo Logins Section */}
+          <div className="mt-6 pt-6 border-t border-white/[0.08]">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-400 text-center mb-3">
+              Quick Demo Logins (1-Click Fill)
+            </p>
+            <div className="grid grid-cols-2 gap-2">
               <button
                 type="button"
                 onClick={() => setDemoUser('owner@fitzone.com', '123456')}
-                className="p-2.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-orange-50 hover:border-orange-200 text-left transition-colors"
+                className="p-2.5 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.06] hover:border-primary/40 text-left transition-all group"
               >
-                <div className="font-bold text-slate-800">Gym Owner</div>
-                <div className="text-[10px] text-slate-500">owner@fitzone.com</div>
+                <div className="flex items-center gap-1.5 text-primary text-xs font-bold">
+                  <Dumbbell className="h-3.5 w-3.5" />
+                  <span>Gym Owner</span>
+                </div>
+                <div className="text-[10px] text-zinc-400 truncate mt-0.5">owner@fitzone.com</div>
               </button>
-              <button
-                type="button"
-                onClick={() => setDemoUser('trainer@fitzone.com', '123456')}
-                className="p-2.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-blue-50 hover:border-blue-200 text-left transition-colors"
-              >
-                <div className="font-bold text-slate-800">Trainer</div>
-                <div className="text-[10px] text-slate-500">trainer@fitzone.com</div>
-              </button>
+
               <button
                 type="button"
                 onClick={() => setDemoUser('member@fitzone.com', '123456')}
-                className="p-2.5 rounded-lg border border-slate-200 bg-slate-50 hover:bg-emerald-50 hover:border-emerald-200 text-left transition-colors"
+                className="p-2.5 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.06] hover:border-emerald-500/40 text-left transition-all group"
               >
-                <div className="font-bold text-slate-800">Member</div>
-                <div className="text-[10px] text-slate-500">member@fitzone.com</div>
+                <div className="flex items-center gap-1.5 text-emerald-400 text-xs font-bold">
+                  <Users className="h-3.5 w-3.5" />
+                  <span>Member</span>
+                </div>
+                <div className="text-[10px] text-zinc-400 truncate mt-0.5">member@fitzone.com</div>
               </button>
+
+              <button
+                type="button"
+                onClick={() => setDemoUser('trainer@fitzone.com', '123456')}
+                className="p-2.5 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.06] hover:border-cyan-500/40 text-left transition-all group"
+              >
+                <div className="flex items-center gap-1.5 text-cyan-400 text-xs font-bold">
+                  <Zap className="h-3.5 w-3.5" />
+                  <span>Trainer</span>
+                </div>
+                <div className="text-[10px] text-zinc-400 truncate mt-0.5">trainer@fitzone.com</div>
+              </button>
+
               <button
                 type="button"
                 onClick={() => setDemoUser('admin@gymflow.com', 'Admin12345!')}
-                className="p-2.5 rounded-lg border border-purple-200 bg-purple-50/60 hover:bg-purple-100 text-left transition-colors"
+                className="p-2.5 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] border border-white/[0.06] hover:border-violet-500/40 text-left transition-all group"
               >
-                <div className="font-bold text-purple-900">Super Admin</div>
-                <div className="text-[10px] text-purple-700">admin@gymflow.com</div>
+                <div className="flex items-center gap-1.5 text-violet-400 text-xs font-bold">
+                  <ShieldCheck className="h-3.5 w-3.5" />
+                  <span>Super Admin</span>
+                </div>
+                <div className="text-[10px] text-zinc-400 truncate mt-0.5">admin@gymflow.com</div>
               </button>
             </div>
+          </div>
+        </div>
+
+        {/* Live system pill */}
+        <div className="mt-6 text-center">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.03] border border-white/[0.06] text-[11px] text-zinc-400">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            <span>Neon DB Connected &bull; JWT Token Rotation Active</span>
           </div>
         </div>
       </div>

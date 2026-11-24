@@ -1,103 +1,103 @@
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
-import { Dumbbell, ShieldCheck, Heart, Mail, Phone, MapPin } from 'lucide-react';
+import { Dumbbell, ShieldCheck, Database, Zap, Heart } from 'lucide-react';
 
 export default function Footer() {
   return (
-    <footer className="border-t border-slate-200 bg-white text-slate-600">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
-          {/* Col 1 */}
-          <div className="space-y-4">
-            <div className="flex items-center gap-2">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-white">
+    <footer className="border-t border-white/[0.08] bg-dark-950 text-zinc-400">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          {/* Brand info */}
+          <div className="space-y-4 md:col-span-1">
+            <Link href="/" className="flex items-center gap-2.5">
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-primary to-amber-500 text-white shadow-md shadow-primary/20">
                 <Dumbbell className="h-5 w-5 rotate-45" />
               </div>
-              <span className="text-xl font-bold tracking-tight text-slate-900">
-                Gym<span className="text-primary">Flow</span>
+              <span className="text-xl font-extrabold tracking-tight text-white">
+                Gym<span className="text-gradient-primary">Flow</span>
               </span>
-            </div>
-            <p className="text-sm text-slate-500 leading-relaxed">
-              Enterprise multi-tenant gym scheduling and membership management platform.
-              Operate multiple branches, coordinate trainers, and prevent class overbooking with high-concurrency scheduling.
+            </Link>
+            <p className="text-xs text-zinc-400 leading-relaxed font-light">
+              Enterprise multi-tenant SaaS for athletic gym clubs, combat arenas, and fitness studios.
+              Row-level concurrency, automated waitlists, and branch management.
             </p>
-            <div className="flex items-center gap-2 text-xs font-semibold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-md w-fit">
-              <ShieldCheck className="h-4 w-4" />
-              <span>Multi-Tenant Row-Level Isolation</span>
+            <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[11px] font-semibold">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span>Neon PostgreSQL + Cloudinary Live</span>
             </div>
           </div>
 
-          {/* Col 2 */}
+          {/* Portals */}
           <div className="space-y-3">
-            <h4 className="text-sm font-semibold uppercase tracking-wider text-slate-900">
+            <h4 className="text-xs font-bold uppercase tracking-widest text-zinc-200">
               Platform Portals
             </h4>
-            <ul className="space-y-2 text-sm">
+            <ul className="space-y-2 text-xs">
               <li>
                 <Link href="/member/classes" className="hover:text-primary transition-colors">
-                  Member Booking Portal
+                  Member Portal (Class Booking)
                 </Link>
               </li>
               <li>
                 <Link href="/dashboard/overview" className="hover:text-primary transition-colors">
-                  Gym Owner Dashboard
+                  Gym Business Dashboard
                 </Link>
               </li>
               <li>
                 <Link href="/trainer" className="hover:text-primary transition-colors">
-                  Trainer Schedule & Check-in
+                  Trainer Check-in Portal
                 </Link>
               </li>
               <li>
                 <Link href="/admin" className="hover:text-primary transition-colors">
-                  Platform Super Admin
+                  Super Admin Management
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Col 3 */}
+          {/* Architecture */}
           <div className="space-y-3">
-            <h4 className="text-sm font-semibold uppercase tracking-wider text-slate-900">
-              Features
+            <h4 className="text-xs font-bold uppercase tracking-widest text-zinc-200">
+              Technology Architecture
             </h4>
-            <ul className="space-y-2 text-sm">
-              <li>Concurrency Lock Booking</li>
-              <li>Automated Waitlist Promotion</li>
-              <li>Multi-Branch & Room Management</li>
-              <li>Trainer Conflict Detection</li>
-              <li>Attendance & QR Check-in</li>
-              <li>Revenue & Retention Reports</li>
+            <ul className="space-y-2 text-xs">
+              <li className="flex items-center gap-1.5 text-zinc-400">
+                <Zap className="h-3.5 w-3.5 text-amber-400" />
+                <span>Next.js 14 App Router + TypeScript</span>
+              </li>
+              <li className="flex items-center gap-1.5 text-zinc-400">
+                <Database className="h-3.5 w-3.5 text-cyan-400" />
+                <span>NestJS Modular API Gateway</span>
+              </li>
+              <li className="flex items-center gap-1.5 text-zinc-400">
+                <ShieldCheck className="h-3.5 w-3.5 text-emerald-400" />
+                <span>Prisma ORM & Neon Serverless DB</span>
+              </li>
             </ul>
           </div>
 
-          {/* Col 4 */}
+          {/* Contact / Organization */}
           <div className="space-y-3">
-            <h4 className="text-sm font-semibold uppercase tracking-wider text-slate-900">
-              Contact & HQ
+            <h4 className="text-xs font-bold uppercase tracking-widest text-zinc-200">
+              Active Demo Tenant
             </h4>
-            <div className="space-y-2 text-sm text-slate-500">
-              <div className="flex items-center gap-2">
-                <MapPin className="h-4 w-4 text-slate-400 shrink-0" />
-                <span>Mirpur-2 / Gulshan, Dhaka, Bangladesh</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Mail className="h-4 w-4 text-slate-400 shrink-0" />
-                <span>mdramjan.ict@gmail.com</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Phone className="h-4 w-4 text-slate-400 shrink-0" />
-                <span>+880 1303-488984</span>
-              </div>
+            <div className="p-3 rounded-xl bg-white/[0.03] border border-white/[0.06] space-y-1">
+              <p className="text-xs font-semibold text-white">FitZone Global Fitness</p>
+              <p className="text-[11px] text-zinc-400">Mirpur & Gulshan Elite Branches</p>
+              <p className="text-[11px] text-primary font-medium">contact@fitzone.com</p>
             </div>
           </div>
         </div>
 
-        <div className="mt-12 border-t border-slate-100 pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400 gap-4">
-          <p>© {new Date().getFullYear()} GymFlow SaaS. Architected by Md Ramjan Ali.</p>
-          <div className="flex items-center gap-1">
-            <span>Built for high-performance fitness operations</span>
-            <Heart className="h-3.5 w-3.5 text-rose-500 fill-rose-500" />
+        <div className="mt-12 pt-8 border-t border-white/[0.06] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-zinc-500">
+          <div>
+            &copy; {new Date().getFullYear()} GymFlow Technologies Inc. All rights reserved.
+          </div>
+          <div className="flex items-center gap-1 text-[11px]">
+            <span>Crafted for high performance SaaS</span>
           </div>
         </div>
       </div>
