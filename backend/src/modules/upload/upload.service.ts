@@ -5,18 +5,21 @@ import { v2 as cloudinary } from 'cloudinary';
 export class UploadService {
   constructor() {
     cloudinary.config({
-      cloud_name: process.env.CLOUDINARY_CLOUD_NAME || 'ku04x3pn',
-      api_key: process.env.CLOUDINARY_API_KEY || '975741728163626',
+      cloud_name: process.env.CLOUDINARY_CLOUD_NAME || 'ramjan',
+      api_key: process.env.CLOUDINARY_API_KEY || '839226347835865',
       api_secret: process.env.CLOUDINARY_API_SECRET || '',
     });
   }
 
   async uploadBase64(base64Data: string, folder: string = 'gymflow') {
     try {
-      const result = await cloudinary.uploader.upload(base64Data, {
+      const uploadOptions: Record<string, any> = {
         folder,
-        upload_preset: process.env.CLOUDINARY_UPLOAD_PRESET || 'Ecommerce',
-      });
+      };
+      if (process.env.CLOUDINARY_UPLOAD_PRESET) {
+        uploadOptions.upload_preset = process.env.CLOUDINARY_UPLOAD_PRESET;
+      }
+      const result = await cloudinary.uploader.upload(base64Data, uploadOptions);
       return {
         url: result.secure_url,
         publicId: result.public_id,

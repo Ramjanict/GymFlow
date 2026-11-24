@@ -9,8 +9,8 @@ GymFlow is an enterprise-scale, production-ready Multi-Tenant SaaS platform arch
 - **Backend**: [NestJS](https://nestjs.com/) (Modular Monolith, TypeScript, Passport.js, JWT Token Rotation, Swagger API Gateway)
 - **Database**: [PostgreSQL on Neon](https://neon.tech/) with [Prisma ORM](https://www.prisma.io/) (33 entities, composite tenant isolation keys)
 - **Frontend**: [Next.js 14 App Router](https://nextjs.org/) (TypeScript, Tailwind CSS, Redux Toolkit, React Toastify, Lucide Icons)
-- **Asset Storage**: [Cloudinary](https://cloudinary.com/) (`ku04x3pn`)
-- **Monorepo**: [pnpm Workspaces](https://pnpm.io/) + [Turborepo](https://turbo.build/)
+- **Asset Storage**: [Cloudinary](https://cloudinary.com/) (`ramjan`)
+- **Structure**: Standalone [NestJS](https://nestjs.com/) Backend + [Next.js 14](https://nextjs.org/) Frontend Architecture
 
 ---
 
